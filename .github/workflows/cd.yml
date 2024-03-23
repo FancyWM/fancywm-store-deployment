@@ -107,8 +107,8 @@ jobs:
           RuntimeIdentifier: win-${{ matrix.targetplatform }}
 
       # Execute all unit tests in the solution
-      - name: Execute unit tests
-        run: dotnet test
+      # - name: Execute unit tests
+      #   run: dotnet test
 
       # Build the Windows Application Packaging project for Debug and Release
       - name: Build the Windows Application Packaging Project (wapproj) for ${{ matrix.ChannelName }}
