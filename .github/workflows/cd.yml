@@ -25,7 +25,7 @@ jobs:
     runs-on: windows-latest
 
     env:
-      App_Packages_Archive: Packages.${{ matrix.ChannelName }}.${{ matrix.targetplatform }}.zip
+      App_Packages_Bundle: FancyWM.${{ matrix.ChannelName }}.${{ matrix.targetplatform }}.msixbundle
       App_Packages_Directory: AppPackages
       SigningCertificate: FancyWMGithubActions.pfx
       Solution_Path: FancyWM.sln
@@ -109,7 +109,7 @@ jobs:
 
       # Archive the package
       - name: Create archive
-        run: Compress-Archive -Path $env:Wap_Project_Directory\$env:App_Packages_Directory\* -DestinationPath $env:Wap_Project_Directory\$env:App_Packages_Directory\$env:App_Packages_Archive
+        run: $env:App_Packages_Bundle_Path = (ls $env:Wap_Project_Directory\$env:App_Packages_Directory\*\*${{ matrix.targetplatform }}.msixbundle)[0].FullName
 
       # Create the release:  https://github.com/actions/create-release
       - name: Create release
@@ -131,6 +131,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ${{ env.Wap_Project_Directory }}\${{ env.App_Packages_Directory }}\${{ env.App_Packages_Archive }}
-          asset_name: ${{ env.App_Packages_Archive }}
+          asset_path: ${{ env.App_Packages_Bundle_Path }}
+          asset_name: ${{ env.App_Packages_Bundle }}
           asset_content_type: application/zip
