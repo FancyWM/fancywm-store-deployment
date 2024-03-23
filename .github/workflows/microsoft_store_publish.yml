@@ -1,0 +1,48 @@
+name: Submit FancyWM to Windows Store
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+
+  microsoft_store:
+    name: Publish Microsoft Store
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get latest URL from public releases
+        id: releaseVars
+        run: |
+          release=$(curl https://api.github.com/repos/fancywm/FancyWM/releases | jq '[.[]|select(.name | contains("Release"))][0]')
+          assets=$(jq -n "$release" | jq '.assets')
+          packageBundle=$(jq -n "$assets" | jq '[.[]|select(.name | contains("msixbundle"))]')
+          echo ::set-output name=packageBundleX64Url::$(jq -n "$packageBundle" | jq -r '[.[]|select(.name | contains("x64"))][0].browser_download_url')
+
+      - name: Configure Store Credentials
+        uses: microsoft/store-submission@v1
+        with:
+          command: configure
+          seller-id: ${{ secrets.SELLER_ID }}
+          product-id: ${{ secrets.PRODUCT_ID }}
+          tenant-id: ${{ secrets.TENANT_ID }}
+          client-id: ${{ secrets.CLIENT_ID }}
+          client-secret: ${{ secrets.CLIENT_SECRET }}
+
+      - name: Update draft submission
+        uses: microsoft/store-submission@v1
+        with:
+          command: update
+          product-update: '{
+              "packages":[
+                  {
+                    "packageUrl":"${{ steps.releaseVars.outputs.packageBundleX64Url }}",
+                    "languages":["en"]
+                  }
+              ]
+            }'
+
+      # - name: Publish Submission
+      #   uses: microsoft/store-submission@v1
+      #   with:
+      #     command: publish
