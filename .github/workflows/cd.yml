@@ -4,7 +4,7 @@ on:
   push:
     branches: ["main"]
     tags:
-      - "*"
+      - "v*"
   pull_request:
     branches: ["main"]
 
@@ -20,7 +20,7 @@ jobs:
             Configuration: Release
             DistributionUrl: https://github.com/FancyWM/fancywm
             MsixPackageId: 2203VeselinKaraganev.FancyWM
-            MsixPublisherId: CN=18A4315F-5918-494C-B473-035F554CB85
+            MsixPublisherId: CN=18A4315F-5918-494C-B473-035F554CB857
             MsixPackageDisplayName: FancyWM
 
     runs-on: windows-latest
