@@ -36,24 +36,11 @@
   <PropertyGroup>
     <ProjectGuid>0536b61a-90cf-428d-b4f8-cf011b3a0830</ProjectGuid>
     <TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <TargetPlatformMinVersion>10.0.18362.0</TargetPlatformMinVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
-    <!-- True/false. Sign the output packages. Default is true. -->
     <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
-    <!-- Values: StoreUpload, CI, SideLoadOnly. Default is StoreUpload.
-         StoreUpload = appxupload + sideload
-         CI = appxupload
-         SideLoadOnly = sideload
-    -->
-    <!--<UapAppxPackageBuildMode>CI</UapAppxPackageBuildMode>-->
-    <!-- Ouput folder for packages. Default is AppPackages -->
-    <!--<AppxPackageDir>AppPackages</AppxPackageDir>-->
-    <!-- Generate .appinstaller and HTML -->
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-    <!-- Generate architecture specific packages. Values: x86|x64|arm|arm64 -->
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
-    <!-- App installer file base url -->
-    <AppInstallerUri>https://microsoft.github.io/github-actions-for-desktop-apps-distribution-local</AppInstallerUri>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <EntryPointProjectUniqueName>..\FancyWM\FancyWM.csproj</EntryPointProjectUniqueName>
     <AppInstallerUpdateFrequency>0</AppInstallerUpdateFrequency>
@@ -89,7 +76,6 @@
   <ItemGroup>
     <Content Include="Images\*" />
     <None Include="Package.StoreAssociation.xml" />
-    <None Include="FancyWM.Package_TemporaryKey.pfx" />
     <Content Include="Package.appinstaller" />
   </ItemGroup>
   <ItemGroup>

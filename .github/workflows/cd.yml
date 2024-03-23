@@ -12,31 +12,15 @@ jobs:
   build:
     strategy:
       matrix:
-        channel: [Debug, Release, StoreUpload]
+        channel: [StoreUpload]
         targetPlatform: [x64]
         include:
-          - channel: Debug
-            ChannelName: Debug
-            Configuration: Debug
-            DistributionUrl: https://github.com/FancyWM/fancywm
-            MsixPackageId: FancyWM.Debug
-            MsixPublisherId: CN=FancyWM
-            MsixPackageDisplayName: FancyWM (Debug)
-
-          - channel: Release
-            ChannelName: Release
-            Configuration: Release
-            DistributionUrl: https://github.com/FancyWM/fancywm
-            MsixPackageId: FancyWM
-            MsixPublisherId: CN=FancyWM
-            MsixPackageDisplayName: FancyWM
-
           - channel: StoreUpload
             ChannelName: StoreUpload
             Configuration: Release
             DistributionUrl: https://github.com/FancyWM/fancywm
-            MsixPackageId: FancyWM
-            MsixPublisherId: CN=FancyWM
+            MsixPackageId: 2203VeselinKaraganev.FancyWM
+            MsixPublisherId: CN=18A4315F-5918-494C-B473-035F554CB85
             MsixPackageDisplayName: FancyWM
 
     runs-on: windows-latest
@@ -97,7 +81,6 @@ jobs:
           $currentDirectory = Get-Location
           $certificatePath = Join-Path -Path $currentDirectory -ChildPath $env:Wap_Project_Directory -AdditionalChildPath $env:SigningCertificate
           [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
-        if: matrix.ChannelName != 'StoreUpload'
 
       # Restore the application
       - name: Restore the Wpf application to populate the obj folder
@@ -110,35 +93,20 @@ jobs:
       # - name: Execute unit tests
       #   run: dotnet test
 
-      # Build the Windows Application Packaging project for Debug and Release
-      - name: Build the Windows Application Packaging Project (wapproj) for ${{ matrix.ChannelName }}
-        run: msbuild $env:Solution_Path /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:BuildMode /p:AppxBundle=$env:AppxBundle /p:PackageCertificateKeyFile=$env:SigningCertificate /p:PackageCertificatePassword=${{ secrets.Pfx_Key }}
-        if: matrix.ChannelName != 'StoreUpload'
-        env:
-          AppxBundle: Never
-          AppInstallerUri: ${{ matrix.DistributionUrl }}
-          BuildMode: SideloadOnly
-          Configuration: ${{ matrix.Configuration }}
-          GenerateAppInstallerFile: True
-          TargetPlatform: ${{ matrix.targetplatform }}
-
       # Build the Windows Application Packaging project for StoreUpload
       - name: Build the Windows Application Packaging Project (wapproj) for ${{ matrix.ChannelName }}
-        run: msbuild $env:Solution_Path /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:BuildMode /p:AppxBundle=$env:AppxBundle /p:GenerateAppInstallerFile=$env:GenerateAppInstallerFile /p:AppxPackageSigningEnabled=$env:AppxPackageSigningEnabled
-        if: matrix.ChannelName == 'StoreUpload'
+        run: msbuild $env:Solution_Path /p:Platform=$env:TargetPlatform /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:BuildMode /p:AppxBundle=$env:AppxBundle /p:GenerateAppInstallerFile=$env:GenerateAppInstallerFile /p:AppxPackageSigningEnabled=$env:AppxPackageSigningEnabled /p:PackageCertificateKeyFile=$env:SigningCertificate /p:PackageCertificatePassword=${{ secrets.Pfx_Key }}
         env:
           AppxBundle: Never
-          AppxPackageSigningEnabled: False
+          AppxPackageSigningEnabled: True
           BuildMode: StoreUpload
           Configuration: ${{ matrix.Configuration }}
           GenerateAppInstallerFile: False
-          TargetPlatform:
-            ${{ matrix.targetplatform }}
+          TargetPlatform: ${{ matrix.targetplatform }}
 
             # Remove the .pfx
       - name: Remove the .pfx
         run: Remove-Item -path $env:Wap_Project_Directory\$env:SigningCertificate
-        if: matrix.ChannelName != 'StoreUpload'
 
       # Archive the package
       - name: Create archive
