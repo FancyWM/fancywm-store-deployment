@@ -25,7 +25,7 @@ jobs:
     runs-on: windows-latest
 
     env:
-      App_Packages_Archive: AppPackages.zip
+      App_Packages_Archive: Packages.${{ matrix.ChannelName }}.${{ matrix.targetplatform }}.zip
       App_Packages_Directory: AppPackages
       SigningCertificate: FancyWMGithubActions.pfx
       Solution_Path: FancyWM.sln
@@ -118,10 +118,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ github.ref}}.${{matrix.ChannelName}}.${{ matrix.targetplatform }}
-          release_name: ${{ github.ref }}.${{ matrix.ChannelName }}.${{ matrix.targetplatform }}
+          tag_name: ${{ github.ref}}
+          release_name: ${{ github.ref }}
           draft: false
-          prerelease: false
+          prerelease: ${{ steps.nbgv.outputs.PublicRelease }}
 
       # Upload release asset:   https://github.com/actions/upload-release-asset
       - name: Update release asset
