@@ -12,7 +12,7 @@ jobs:
   build:
     strategy:
       matrix:
-        configuration: [Debug, Release, StoreUpload]
+        channel: [Debug, Release, StoreUpload]
         targetPlatform: [x64]
         include:
           - channel: Debug
