@@ -1,4 +1,4 @@
-name: .NET Desktop
+name: Microsoft Store Build
 
 on:
   push:
@@ -109,7 +109,9 @@ jobs:
 
       # Archive the package
       - name: Create archive
-        run: $env:App_Packages_Bundle_Path = (ls $env:Wap_Project_Directory\$env:App_Packages_Directory\*\*${{ matrix.targetplatform }}.msixbundle)[0].FullName
+        run: |
+          $BundlePath = (ls $env:Wap_Project_Directory\$env:App_Packages_Directory\*\*${{ matrix.targetplatform }}.msixbundle)[0].FullName
+          echo "App_Packages_Bundle_Path=$BundlePath" >> $env:GITHUB_ENV
 
       # Create the release:  https://github.com/actions/create-release
       - name: Create release
