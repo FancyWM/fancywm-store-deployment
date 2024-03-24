@@ -102,7 +102,8 @@ namespace FancyWM
 
             // Create logger
             var logger = provider.GetRequiredService<ILogger>();
-            logger.Warning($"FancyWM v{GetVersionString()} (https://www.microsoft.com/store/apps/9P1741LKHQS9) on {Environment.OSVersion}");
+            var cmdLine = string.Join(' ', Environment.GetCommandLineArgs());
+            logger.Warning($"FancyWM v{GetVersionString()} (https://www.microsoft.com/store/apps/9P1741LKHQS9) on {Environment.OSVersion} CMD={{{cmdLine}}}");
 
             bool exitNormally = false;
             try
